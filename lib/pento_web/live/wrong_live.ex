@@ -5,7 +5,7 @@ defmodule PentoWeb.WrongLive do
     {:ok, socket}
   end
 
-  def handle_params(unsigned_params, uri, socket) do
+  def handle_params(_params, _uri, socket) do
     {:noreply,
      assign(socket,
        score: 0,
