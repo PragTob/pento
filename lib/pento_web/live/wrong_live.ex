@@ -1,7 +1,7 @@
 defmodule PentoWeb.WrongLive do
   use PentoWeb, :live_view
 
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     {:ok, socket}
   end
 
@@ -50,6 +50,11 @@ defmodule PentoWeb.WrongLive do
         </.link>
       <% end %>
     </h2>
+
+    <pre>
+      <%= @current_user.email %>
+      <%= @session_id %>
+    </pre>
     """
   end
 
