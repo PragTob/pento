@@ -47,6 +47,7 @@ defmodule PentoWeb.Router do
 
   ## Authentication routes
 
+  ### Routes used for only logged_in users, redirected when done logged in
   scope "/", PentoWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
@@ -61,17 +62,7 @@ defmodule PentoWeb.Router do
     post "/users/log_in", UserSessionController, :create
   end
 
-  scope "/", PentoWeb do
-    pipe_through [:browser, :require_authenticated_user]
-
-    live_session :require_authenticated_user,
-      on_mount: [{PentoWeb.UserAuth, :ensure_authenticated}] do
-      live "/users/settings", UserSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-      live "/guess", WrongLive
-    end
-  end
-
+  ### Routes meant for both logged in and logged out users
   scope "/", PentoWeb do
     pipe_through [:browser]
 
@@ -81,6 +72,25 @@ defmodule PentoWeb.Router do
       on_mount: [{PentoWeb.UserAuth, :mount_current_user}] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
+    end
+  end
+
+  ### routes only for logged in
+  scope "/", PentoWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :require_authenticated_user,
+      on_mount: [{PentoWeb.UserAuth, :ensure_authenticated}] do
+      live "/users/settings", UserSettingsLive, :edit
+      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/guess", WrongLive
+
+      live "/products", ProductLive.Index, :index
+      live "/products/new", ProductLive.Index, :new
+      live "/products/:id/edit", ProductLive.Index, :edit
+
+      live "/products/:id", ProductLive.Show, :show
+      live "/products/:id/show/edit", ProductLive.Show, :edit
     end
   end
 end
